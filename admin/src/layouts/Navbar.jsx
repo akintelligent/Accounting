@@ -1,9 +1,9 @@
-import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaSignOutAlt, FaChevronDown, FaBars } from "react-icons/fa";
 import { useContext, useState, useRef, useEffect } from "react";
 import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar({ setSidebarOpen }) {
   const { user, logout } = useContext(UserContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -11,10 +11,9 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // go to login page
+    navigate("/");
   };
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -22,44 +21,63 @@ export default function Navbar() {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
-    <nav className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center shadow-lg">
-      <div className="font-bold text-xl">Accounting ERP</div>
+  const profileImage = user?.photo_url
+    ? `${process.env.REACT_APP_BASE_URL}/${user.photo_url}`
+    : "/default-avatar.png";
 
+  return (
+    <nav className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+      {/* Mobile Menu Button */}
+      <button
+        className="md:hidden text-white text-2xl mr-4"
+        onClick={() => setSidebarOpen((prev) => !prev)}
+      >
+        <FaBars />
+      </button>
+
+      {/* Logo */}
+      <div className="font-bold text-2xl tracking-wide">Accounting ERP</div>
+
+      {/* Right Section */}
       <div className="flex items-center gap-6">
-        {/* Notification */}
-        <button className="relative">
-          <FaBell className="text-xl hover:text-yellow-300 transition" />
-          <span className="absolute top-0 right-0 bg-red-500 text-xs rounded-full px-1">3</span>
+        {/* Notifications */}
+        <button className="relative group">
+          <FaBell className="text-xl hover:text-yellow-300 transition duration-300" />
+          <span className="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full px-1 animate-pulse">
+            3
+          </span>
         </button>
 
-        {/* User Info with Dropdown */}
+        {/* User Profile */}
         <div className="relative" ref={dropdownRef}>
           <div
-            className="flex items-center gap-2 cursor-pointer hover:bg-blue-500 p-2 rounded-lg transition"
-            onClick={() => setIsDropdownOpen((prev) => !prev)}
+            className="flex items-center gap-2 cursor-pointer hover:bg-blue-500 p-2 rounded-lg transition duration-300"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <FaUserCircle className="text-2xl" />
-            <div className="flex flex-col text-sm">
-              <span className="font-medium">
-                {user ? user.empName : "Guest"}
-              </span>
-              <span className="text-xs">
-                {user ? user.roleName || "No Role" : ""}
-              </span>
+            <img
+              src={profileImage}
+              alt={user?.empName || "User"}
+              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md transition-transform duration-300 hover:scale-105"
+            />
+            <div className="flex flex-col text-sm md:flex">
+              <span className="font-semibold">{user?.empName || "Guest"}</span>
+              <span className="text-xs">{user?.roleName || "No Role"}</span>
             </div>
+            <FaChevronDown
+              className={`transition-transform duration-300 ${
+                isDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
           </div>
 
-          {isDropdownOpen && user && (
-            <div className="absolute top-full right-0 mt-2 bg-white text-black rounded shadow-lg w-32 z-10">
+          {isDropdownOpen && (
+            <div className="absolute top-full right-0 mt-2 bg-white text-black rounded-lg shadow-xl w-44 animate-fade-in overflow-hidden z-50">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 p-2 w-full hover:bg-gray-200"
+                className="flex items-center gap-2 p-3 w-full hover:bg-gray-100 transition"
               >
                 <FaSignOutAlt />
                 Logout

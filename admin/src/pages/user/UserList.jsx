@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "../../services/userService";
 import UserForm from "./UserForm";
+import { FaEdit, FaTrash, FaUser } from "react-icons/fa";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -47,61 +48,82 @@ export default function UserList() {
   };
 
   return (
-    <div className="flex space-x-6">
-      {/* Form Section */}
-      <div className="w-1/3">
-        <UserForm editUser={editUser} onSave={handleSave} />
-      </div>
+    <div className="p-4 space-y-6">
+      <div className="flex flex-col lg:flex-row gap-6">
+        
+        {/* User Form */}
+        <div className="w-full lg:w-1/3 bg-white rounded-xl shadow-lg p-6 animate-fade-in">
+          <UserForm editUser={editUser} onSave={handleSave} />
+        </div>
 
-      {/* List Section */}
-      <div className="w-2/3 overflow-auto">
-        <table className="min-w-full bg-white border shadow-md">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">Username</th>
-              <th className="border px-4 py-2">Employee</th>
-              <th className="border px-4 py-2">Role</th>
-              <th className="border px-4 py-2">Status</th>
-              <th className="border px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length > 0 ? (
-              users.map((u) => (
-                <tr key={u.USER_ID} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{u.USER_ID}</td>
-                  <td className="border px-4 py-2">{u.USERNAME}</td>
-                  <td className="border px-4 py-2">{u.EMP_NAME}</td>
-                  <td className="border px-4 py-2">{u.ROLE_NAME}</td>
-                  <td className="border px-4 py-2">
-                    {u.IS_ACTIVE === "Y" ? "Active" : "Inactive"}
-                  </td>
-                  <td className="border px-4 py-2 space-x-2">
-                    <button
-                      onClick={() => handleEdit(u)}
-                      className="bg-yellow-500 px-2 py-1 rounded hover:bg-yellow-600 transition"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(u.USER_ID)}
-                      className="bg-red-500 px-2 py-1 rounded hover:bg-red-600 transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
+        {/* User List */}
+        <div className="w-full lg:w-2/3 bg-white rounded-xl shadow-lg p-4 animate-fade-in">
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <FaUser /> User List
+          </h2>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 text-left">ID</th>
+                  <th className="px-4 py-2 text-left">Username</th>
+                  <th className="px-4 py-2 text-left">Employee</th>
+                  <th className="px-4 py-2 text-left">Role</th>
+                  <th className="px-4 py-2 text-left">Status</th>
+                  <th className="px-4 py-2 text-center">Actions</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="text-center p-4">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200">
+                {users.length > 0 ? (
+                  users.map((u) => (
+                    <tr
+                      key={u.USER_ID}
+                      className="hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <td className="px-4 py-2">{u.USER_ID}</td>
+                      <td className="px-4 py-2 font-medium">{u.USERNAME}</td>
+                      <td className="px-4 py-2">{u.EMP_NAME}</td>
+                      <td className="px-4 py-2">{u.ROLE_NAME}</td>
+                      <td className="px-4 py-2">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            u.IS_ACTIVE === "Y"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {u.IS_ACTIVE === "Y" ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 flex justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(u)}
+                          className="bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600 transition"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(u.USER_ID)}
+                          className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition"
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center p-4">
+                      No users found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

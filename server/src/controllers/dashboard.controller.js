@@ -1,23 +1,21 @@
 import { getConnection } from "../config/db.js";
 
-/**
- * Get dashboard statistics
- * Protected route — requires valid JWT token
- */
 export const getDashboardStats = async (req, res) => {
   try {
     const conn = await getConnection();
 
-    // Count total users
-    const usersResult = await conn.execute(`SELECT COUNT(*) AS total_users FROM USERS`);
-    const employeesResult = await conn.execute(`SELECT COUNT(*) AS total_employees FROM EMPLOYEES`);
+    const usersResult = await conn.execute(`SELECT COUNT(*) AS TOTAL_USERS FROM USERS`);
+    const employeesResult = await conn.execute(`SELECT COUNT(*) AS TOTAL_EMPLOYEES FROM EMPLOYEES`);
 
     await conn.close();
+
+    console.log("Users:", usersResult.rows);
+    console.log("Employees:", employeesResult.rows);
 
     return res.json({
       success: true,
       data: {
-        totalUsers: usersResult.rows[0][0],
+        totalUsers: usersResult.rows[0][0], // যদি array আসে
         totalEmployees: employeesResult.rows[0][0],
       },
     });

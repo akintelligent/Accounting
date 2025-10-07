@@ -38,7 +38,7 @@ export default function Login() {
     <div
       className="relative flex items-center justify-center h-screen"
       style={{
-        background: "url('/images/bg1.png') center/cover no-repeat",
+        background: "url('/images/bg1.webp') center/cover no-repeat",
       }}
     >
       {/* Dark Overlay */}

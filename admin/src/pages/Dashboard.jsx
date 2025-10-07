@@ -31,12 +31,16 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-indigo-500 text-white p-6 rounded-xl shadow-lg">
-        <h3 className="text-lg font-semibold">Total Users</h3>
+      <div className="bg-indigo-500 text-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition duration-300">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <FaUsers /> Total Users
+        </h3>
         <p className="text-3xl font-bold mt-2">{stats?.totalUsers}</p>
       </div>
-      <div className="bg-teal-500 text-white p-6 rounded-xl shadow-lg">
-        <h3 className="text-lg font-semibold">Total Employees</h3>
+      <div className="bg-teal-500 text-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition duration-300">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <FaUserTie /> Total Employees
+        </h3>
         <p className="text-3xl font-bold mt-2">{stats?.totalEmployees}</p>
       </div>
     </div>
