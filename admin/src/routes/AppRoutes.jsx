@@ -7,7 +7,10 @@ import EmployeeList from "../pages/employee/EmployeeList";
 import EmployeeForm from "../pages/employee/EmployeeForm";
 import EmployeeDetailsPage from "../pages/employee/EmployeeDetailsPage";
 import CoaList from "../pages/accounts/CoaList";
-import CoaForm from "../pages/accounts/CoaForm";
+// import CoaForm from "../pages/accounts/CoaForm";
+import CoaTree from "../pages/accounts/CoaTree";
+import JournalList from "../pages/accounts/JournalList";
+import LedgerList from "../pages/accounts/LedgerList";
 
 export default function AppRoutes() {
   return (
@@ -21,7 +24,11 @@ export default function AppRoutes() {
         <Route path="employees" element={<EmployeeList />} />
         <Route path="employees/add" element={<EmployeeForm />} />
         <Route path="employees/:id" element={<EmployeeDetailsPage />} />
+        <Route path="journals" element={<JournalList />} />
         <Route path="accounts" element={<CoaList />} />
+        <Route path="accounts/tree" element={<CoaTree />} />
+        <Route path="ledgers" element={<LedgerList />} />
+
         {/* <Route path="coa/add" element={<CoaForm />} /> */}
       </Route>
     </Routes>

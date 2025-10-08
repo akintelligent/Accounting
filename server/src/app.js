@@ -5,6 +5,10 @@ import userRoutes from "./routes/user.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import employeeRoutes from "./routes/employee.routes.js";
 import coaRoutes from "./routes/coa.routes.js";
+import journalRoutes from "./routes/journal.routes.js";
+import ledgerRoutes from "./routes/ledger.routes.js";
+
+
 
 const app = express();
 
@@ -26,6 +30,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/accounts", coaRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/ledger", ledgerRoutes);
 
 
 app.get("/", (req, res) => {

@@ -24,29 +24,40 @@ export default function Navbar({ setSidebarOpen }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ✅ Full image URL from backend path
   const profileImage = user?.photo_url
-    ? `${process.env.REACT_APP_BASE_URL}/${user.photo_url}`
+    ? `${process.env.VITE_API_URL}/${user.photo_url}`
     : "/default-avatar.png";
 
   return (
-    <nav className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden text-white text-2xl mr-4"
-        onClick={() => setSidebarOpen((prev) => !prev)}
-      >
-        <FaBars />
-      </button>
+    <nav className="bg-gradient-to-r from-blue-700 to-indigo-600 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+      
+      {/* Left: Mobile Menu + Logo */}
+      <div className="flex items-center gap-4">
+        <button
+          className="md:hidden text-white text-2xl"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          <FaBars className="hover:text-yellow-300 transition-colors duration-300" />
+        </button>
 
-      {/* Logo */}
-      <div className="font-bold text-2xl tracking-wide">Accounting ERP</div>
+        <div className="flex items-center gap-2 font-bold text-2xl tracking-wide">
+          <img
+            src={`/logos/logo.png`}
+            alt="Logo"
+            className="w-10 h-10 object-contain rounded-md shadow-md"
+          />
+          <span className="hidden md:block">Accounting ERP</span>
+        </div>
+      </div>
 
-      {/* Right Section */}
+      {/* Right: Notifications + User */}
       <div className="flex items-center gap-6">
+        
         {/* Notifications */}
         <button className="relative group">
           <FaBell className="text-xl hover:text-yellow-300 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full px-1 animate-pulse">
+          <span className="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full px-1 animate-ping">
             3
           </span>
         </button>
@@ -73,14 +84,14 @@ export default function Navbar({ setSidebarOpen }) {
             />
           </div>
 
+          {/* Dropdown Menu */}
           {isDropdownOpen && (
             <div className="absolute top-full right-0 mt-2 bg-white text-black rounded-lg shadow-xl w-44 animate-fade-in overflow-hidden z-50">
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 p-3 w-full hover:bg-gray-100 transition"
               >
-                <FaSignOutAlt />
-                Logout
+                <FaSignOutAlt /> Logout
               </button>
             </div>
           )}

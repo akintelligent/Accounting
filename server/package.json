@@ -19,7 +19,9 @@
     "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "oracledb": "^6.9.0"
+    "oracledb": "^6.9.0",
+    "pdfkit": "^0.17.2",
+    "pdfmake": "^0.2.20"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
