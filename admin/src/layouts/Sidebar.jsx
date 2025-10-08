@@ -1,35 +1,53 @@
-import { Link, useLocation } from "react-router-dom";
-import { FaTachometerAlt, FaUsers } from "react-icons/fa";
+import { FaTachometerAlt, FaUsers, FaUserTie, FaBars } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
-export default function Sidebar() {
-  const location = useLocation();
-
-  const menuItems = [
-    { name: "Dashboard", to: "/dashboard", icon: <FaTachometerAlt /> },
-    { name: "Users", to: "/users", icon: <FaUsers /> },
-  ];
-
+export default function Sidebar({ isOpen, setSidebarOpen }) {
   return (
-    <aside className="bg-gradient-to-b from-gray-900 to-gray-800 text-white w-64 min-h-screen p-6 flex flex-col transition-all duration-300">
-      <h1 className="text-2xl font-bold mb-8">Accounting ERP</h1>
-      <ul className="space-y-3 flex-1">
-        {menuItems.map((item) => (
-          <li key={item.to}>
-            <Link
-              to={item.to}
-              className={`flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 ${
-                location.pathname === item.to ? "bg-gray-700 font-semibold" : ""
-              }`}
-            >
-              <span className="text-lg">{item.icon}</span>
-              <span className="text-md">{item.name}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-auto p-4 text-sm text-gray-400">
-        &copy; {new Date().getFullYear()} Accounting ERP
-      </div>
-    </aside>
+    <>
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden transition-opacity ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={() => setSidebarOpen(false)}
+      ></div>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-40 transform transition-transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:static md:shadow-none`}
+      >
+        <div className="p-4 font-bold text-2xl border-b border-gray-200">
+          Accounting ERP
+        </div>
+        <nav className="p-4 flex flex-col gap-2">
+          <NavLink
+            to="/dashboard"
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-200"
+          >
+            <FaTachometerAlt /> Dashboard
+          </NavLink>
+          <NavLink
+            to="/users"
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-200"
+          >
+            <FaUsers /> Users
+          </NavLink>
+          <NavLink
+            to="/employees"
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-200"
+          >
+            <FaUserTie /> Employees
+          </NavLink>
+          <NavLink
+            to="/accounts"
+            className="flex items-center gap-2 p-2 rounded hover:bg-gray-200"
+          >
+            <FaUserTie /> COA
+          </NavLink>
+        </nav>
+      </aside>
+    </>
   );
 }

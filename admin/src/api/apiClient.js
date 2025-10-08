@@ -2,7 +2,6 @@ import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:4000/api",
-  headers: { "Content-Type": "application/json" },
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -10,6 +9,11 @@ apiClient.interceptors.request.use((config) => {
   if (user?.token) {
     config.headers.Authorization = `Bearer ${user.token}`;
   }
+
+  if (!(config.data instanceof FormData)) {
+    config.headers["Content-Type"] = "application/json";
+  }
+
   return config;
 });
 
