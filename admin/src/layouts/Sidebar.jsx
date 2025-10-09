@@ -5,16 +5,23 @@ import {
   FaBook,
   FaClipboardList,
   FaFileInvoiceDollar,
-  FaLayerGroup
+  FaLayerGroup,
+  FaChevronDown,
+  FaChevronUp,
+  FaFileAlt,
+  FaChartPie,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 export default function Sidebar({ isOpen, setSidebarOpen }) {
+  const [isAccountsOpen, setIsAccountsOpen] = useState(false);
+  const [isReportsOpen, setIsReportsOpen] = useState(false);
+
   const menuClass =
     "flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200";
 
-  const activeClass =
-    "bg-gray-200 text-blue-600 font-semibold shadow-inner";
+  const activeClass = "bg-gray-200 text-blue-600 font-semibold shadow-inner";
 
   return (
     <>
@@ -76,35 +83,94 @@ export default function Sidebar({ isOpen, setSidebarOpen }) {
 
           {/* Accounts Section */}
           <div className="mt-4">
-            <h3 className="flex items-center gap-2 text-gray-600 uppercase font-bold text-sm mb-2">
-              <FaBook /> Accounts
-            </h3>
-            <div className="flex flex-col gap-2">
-              <NavLink
-                to="/accounts"
-                className={({ isActive }) =>
-                  `${menuClass} ${isActive ? activeClass : ""}`
-                }
-              >
-                <FaLayerGroup /> Chart of Accounts (COA)
-              </NavLink>
-              <NavLink
-                to="/journals"
-                className={({ isActive }) =>
-                  `${menuClass} ${isActive ? activeClass : ""}`
-                }
-              >
-                <FaClipboardList /> Journal List
-              </NavLink>
-              <NavLink
-                to="/ledgers"
-                className={({ isActive }) =>
-                  `${menuClass} ${isActive ? activeClass : ""}`
-                }
-              >
-                <FaFileInvoiceDollar /> Ledgers
-              </NavLink>
-            </div>
+            <button
+              onClick={() => setIsAccountsOpen(!isAccountsOpen)}
+              className="flex items-center justify-between w-full p-2 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-colors duration-200"
+            >
+              <span className="flex items-center gap-2">
+                <FaBook /> Accounts
+              </span>
+              {isAccountsOpen ? <FaChevronUp /> : <FaChevronDown />}
+            </button>
+
+            {isAccountsOpen && (
+              <div className="mt-2 ml-6 flex flex-col gap-2">
+                <NavLink
+                  to="/accounts"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaLayerGroup /> Chart of Accounts (COA)
+                </NavLink>
+                <NavLink
+                  to="/journals"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaClipboardList /> Journal List
+                </NavLink>
+                <NavLink
+                  to="/ledgers"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaFileInvoiceDollar /> Ledgers
+                </NavLink>
+              </div>
+            )}
+          </div>
+
+          {/* Reports Section */}
+          <div className="mt-4">
+            <button
+              onClick={() => setIsReportsOpen(!isReportsOpen)}
+              className="flex items-center justify-between w-full p-2 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-colors duration-200"
+            >
+              <span className="flex items-center gap-2">
+                <FaChartPie /> Reports
+              </span>
+              {isReportsOpen ? <FaChevronUp /> : <FaChevronDown />}
+            </button>
+
+            {isReportsOpen && (
+              <div className="mt-2 ml-6 flex flex-col gap-2">
+                <NavLink
+                  to="/reports/income-statement"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaFileAlt /> Statement
+                </NavLink>
+                <NavLink
+                  to="/reports/balance-sheet"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaFileAlt /> Balance Sheet
+                </NavLink>
+                <NavLink
+                  to="/reports/cash-flow"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaFileAlt /> Cash Flow
+                </NavLink>
+                <NavLink
+                  to="/reports/trial-balance"
+                  className={({ isActive }) =>
+                    `${menuClass} ${isActive ? activeClass : ""}`
+                  }
+                >
+                  <FaFileInvoiceDollar /> Trial Balance
+                </NavLink>
+              </div>
+            )}
           </div>
         </nav>
       </aside>

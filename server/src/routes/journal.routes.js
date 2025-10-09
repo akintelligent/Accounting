@@ -11,13 +11,17 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllEntries);
+// Put specific/static routes first
+router.get("/ledger", getLedgerList);
+router.post("/:id/post", postEntry);
+
+// Then id route
 router.get("/:id", getEntryById);
+
+// Then base and other CRUD (base route last to avoid conflict)
+router.get("/", getAllEntries);
 router.post("/", createEntry);
 router.put("/:id", updateEntry);
-router.post("/:id/post", postEntry);    // post endpoint
 router.delete("/:id", deleteEntry);
-router.get("/ledger", getLedgerList);
-
 
 export default router;

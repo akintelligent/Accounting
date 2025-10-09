@@ -1,6 +1,8 @@
 import apiClient from "../api/apiClient";
 
-export const getJournalEntries = () => apiClient.get("/journal");
+export const getJournalEntries = (params = {}) =>
+  apiClient.get("/journal", { params });
+
 export const getJournalEntry = (id) => apiClient.get(`/journal/${id}`);
 export const createJournalEntry = (data) => apiClient.post("/journal", data);
 export const updateJournalEntry = (id, data) => apiClient.put(`/journal/${id}`, data);

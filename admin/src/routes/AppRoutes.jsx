@@ -7,10 +7,13 @@ import EmployeeList from "../pages/employee/EmployeeList";
 import EmployeeForm from "../pages/employee/EmployeeForm";
 import EmployeeDetailsPage from "../pages/employee/EmployeeDetailsPage";
 import CoaList from "../pages/accounts/CoaList";
-// import CoaForm from "../pages/accounts/CoaForm";
 import CoaTree from "../pages/accounts/CoaTree";
 import JournalList from "../pages/accounts/JournalList";
 import LedgerList from "../pages/accounts/LedgerList";
+import TrialBalancePage from "../pages/reports/TrialBalancePage";
+import IncomeStatementPage from "../pages/reports/IncomeStatementPage";
+import BalanceSheetPage from "../pages/reports/BalanceSheetPage";
+import CashFlowPage from "../pages/reports/CashFlowPage";
 
 export default function AppRoutes() {
   return (
@@ -28,6 +31,10 @@ export default function AppRoutes() {
         <Route path="accounts" element={<CoaList />} />
         <Route path="accounts/tree" element={<CoaTree />} />
         <Route path="ledgers" element={<LedgerList />} />
+        <Route path="reports/trial-balance" element={<TrialBalancePage />} />
+        <Route path="reports/income-statement" element={<IncomeStatementPage />} />
+        <Route path="reports/balance-sheet" element={<BalanceSheetPage />} />
+        <Route path="reports/cash-flow" element={<CashFlowPage />} />
 
         {/* <Route path="coa/add" element={<CoaForm />} /> */}
       </Route>

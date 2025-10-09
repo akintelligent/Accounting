@@ -7,29 +7,58 @@ import { successResponse, errorResponse } from "../utils/response.js";
  */
 export const getAllEntries = async (req, res) => {
   try {
+    const { search, from, to } = req.query;
     const conn = await getConnection();
-    const result = await conn.execute(
-      `SELECT ENTRY_ID, ENTRY_NO, ENTRY_DATE, VOUCHER_TYPE, DESCRIPTION, STATUS, CREATED_BY, CREATED_AT
-         FROM ACC_JOURNAL_ENTRIES
-         ORDER BY ENTRY_DATE DESC, ENTRY_ID DESC`
-    );
+
+    let query = `
+      SELECT ENTRY_ID, ENTRY_NO, ENTRY_DATE, VOUCHER_TYPE, DESCRIPTION, STATUS, CREATED_BY, CREATED_AT
+      FROM ACC_JOURNAL_ENTRIES
+      WHERE 1=1
+    `;
+
+    const binds = {};
+
+    if (from) {
+      query += ` AND ENTRY_DATE >= TO_DATE(:p_from, 'YYYY-MM-DD')`;
+      binds.p_from = from;
+    }
+
+    if (to) {
+      query += ` AND ENTRY_DATE <= TO_DATE(:p_to, 'YYYY-MM-DD')`;
+      binds.p_to = to;
+    }
+
+    if (search) {
+      query += ` AND (
+        LOWER(ENTRY_NO) LIKE '%' || LOWER(:p_search) || '%' 
+        OR LOWER(DESCRIPTION) LIKE '%' || LOWER(:p_search) || '%'
+        OR LOWER(VOUCHER_TYPE) LIKE '%' || LOWER(:p_search) || '%'
+      )`;
+      binds.p_search = search;
+    }
+
+    query += ` ORDER BY ENTRY_DATE DESC, ENTRY_ID DESC`;
+
+    console.log("📡 Fetching with SQL:", query, binds);
+
+    const result = await conn.execute(query, binds, { outFormat: oracledb.OUT_FORMAT_OBJECT });
     await conn.close();
 
-    const entries = result.rows.map((r) => ({
-      ENTRY_ID: r[0],
-      ENTRY_NO: r[1],
-      ENTRY_DATE: r[2],
-      VOUCHER_TYPE: r[3],
-      DESCRIPTION: r[4],
-      STATUS: r[5],
-      CREATED_BY: r[6],
-      CREATED_AT: r[7],
+    const entries = result.rows.map((row) => ({
+      ENTRY_ID: row.ENTRY_ID,
+      ENTRY_NO: row.ENTRY_NO,
+      ENTRY_DATE: row.ENTRY_DATE,
+      VOUCHER_TYPE: row.VOUCHER_TYPE,
+      DESCRIPTION: row.DESCRIPTION,
+      STATUS: row.STATUS,
+      CREATED_BY: row.CREATED_BY,
+      CREATED_AT: row.CREATED_AT,
     }));
 
     return successResponse(res, "Journal entries fetched", { entries });
   } catch (err) {
-    console.error(err);
-    return errorResponse(res, "Error fetching journal entries");
+    console.error("getAllEntries error:", err);
+    return errorResponse(res, "Error fetching journal entries: " + err.message);
   }
 };
 

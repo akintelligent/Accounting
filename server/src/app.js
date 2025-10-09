@@ -7,6 +7,19 @@ import employeeRoutes from "./routes/employee.routes.js";
 import coaRoutes from "./routes/coa.routes.js";
 import journalRoutes from "./routes/journal.routes.js";
 import ledgerRoutes from "./routes/ledger.routes.js";
+import trialBalanceRoutes from "./routes/trialBalance.routes.js";
+import incomeStatementRoutes from "./routes/incomeStatement.routes.js";
+import balanceSheetRoutes from "./routes/balanceSheet.routes.js";
+import cashFlowRoutes from "./routes/cashFlow.routes.js";
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24,14 +37,22 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 
-//Routes
+//Commom Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/employees", employeeRoutes);
+
+//Accounts Routes
 app.use("/api/accounts", coaRoutes);
 app.use("/api/journal", journalRoutes);
 app.use("/api/ledger", ledgerRoutes);
+
+//Accounts Reports Routes
+app.use("/api/trial-balance", trialBalanceRoutes);
+app.use("/api/income-statement", incomeStatementRoutes);
+app.use("/api/balance-sheet", balanceSheetRoutes);
+app.use("/api/cash-flow", cashFlowRoutes);
 
 
 app.get("/", (req, res) => {
