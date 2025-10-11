@@ -24,10 +24,12 @@ export default function Navbar({ setSidebarOpen }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ Full image URL from backend path
+  // 🔹 Updated here: use PHOTO_URL directly from user
   const profileImage = user?.photo_url
-    ? `${process.env.VITE_API_URL}/${user.photo_url}`
-    : "/default-avatar.png";
+    ? user.photo_url.startsWith("http")
+      ? user.photo_url // if full URL from backend
+      : `${import.meta.env.VITE_API_URL}/${user.photo_url}` // prepend API URL if relative
+    : "/default-avatar.png"; // fallback
 
   return (
     <nav className="bg-gradient-to-r from-blue-700 to-indigo-600 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
@@ -53,14 +55,13 @@ export default function Navbar({ setSidebarOpen }) {
 
       {/* Right: Notifications + User */}
       <div className="flex items-center gap-6">
-        
         {/* Notifications */}
-        <button className="relative group">
+        {/* <button className="relative group">
           <FaBell className="text-xl hover:text-yellow-300 transition duration-300" />
           <span className="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full px-1 animate-ping">
             3
           </span>
-        </button>
+        </button> */}
 
         {/* User Profile */}
         <div className="relative" ref={dropdownRef}>
@@ -72,6 +73,7 @@ export default function Navbar({ setSidebarOpen }) {
               src={profileImage}
               alt={user?.empName || "User"}
               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md transition-transform duration-300 hover:scale-105"
+              onError={(e) => (e.target.src = "/default-avatar.png")}
             />
             <div className="flex flex-col text-sm md:flex">
               <span className="font-semibold">{user?.empName || "Guest"}</span>
@@ -100,3 +102,4 @@ export default function Navbar({ setSidebarOpen }) {
     </nav>
   );
 }
+ 

@@ -1,3 +1,4 @@
+// controllers/auth.controller.js
 import { getConnection } from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -17,6 +18,7 @@ export const login = async (req, res) => {
   try {
     conn = await getConnection();
 
+    // Get user + employee + role
     const result = await conn.execute(
       `SELECT 
           U.USER_ID, 
@@ -26,6 +28,7 @@ export const login = async (req, res) => {
           E.EMP_ID, 
           E.EMP_NAME, 
           E.DESIGNATION, 
+          E.PHOTO_URL,
           R.ROLE_ID, 
           R.ROLE_NAME
        FROM USERS U
@@ -39,7 +42,6 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
-    // Oracle default array-based fetch
     const user = result.rows[0];
 
     // Compare passwords
@@ -53,15 +55,16 @@ export const login = async (req, res) => {
       return res.status(403).json({ success: false, message: "User is inactive" });
     }
 
-    // ✅ Create JWT token with full user payload
+    // ✅ Create JWT token with full user payload including PHOTO_URL
     const tokenPayload = {
       userId: user[0],
       username: user[1],
       empId: user[4],
       empName: user[5],
       designation: user[6],
-      roleId: user[7],
-      roleName: user[8],
+      photo_url: user[7],   // add PHOTO_URL here
+      roleId: user[8],
+      roleName: user[9],
     };
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
@@ -73,7 +76,7 @@ export const login = async (req, res) => {
       message: "Login successful",
       data: {
         token,
-        user: tokenPayload, // easy to access on frontend
+        user: tokenPayload, // frontend can now access user.photo_url
       },
     });
   } catch (error) {
@@ -84,6 +87,7 @@ export const login = async (req, res) => {
   }
 };
 
+// controllers/auth.controller.js
 export const logout = async (req, res) => {
   try {
     return res.json({
@@ -98,3 +102,4 @@ export const logout = async (req, res) => {
     });
   }
 };
+
