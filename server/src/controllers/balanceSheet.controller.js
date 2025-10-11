@@ -26,11 +26,11 @@ export const getBalanceSheet = async (req, res) => {
     `, { fromDate, toDate });
 
     res.status(200).json({
-      data: result.rows,
-      total: countResult.rows[0][0]
+      data: result.rows || [],
+      total: countResult.rows[0][0] || 0
     });
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error fetching balance sheet:", err);
     res.status(500).json({ message: "Error fetching balance sheet" });
   } finally {
     if (connection) await connection.close();

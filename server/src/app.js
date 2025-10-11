@@ -13,16 +13,6 @@ import balanceSheetRoutes from "./routes/balanceSheet.routes.js";
 import cashFlowRoutes from "./routes/cashFlow.routes.js";
 
 
-
-
-
-
-
-
-
-
-
-
 const app = express();
 
 app.use(cors());

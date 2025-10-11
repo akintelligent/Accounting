@@ -27,3 +27,6 @@ export const getConnection = async () => {
   if (!pool) await initOracleDB();
   return pool.getConnection();
 };
+
+// export oracledb constants for controllers
+export { oracledb };

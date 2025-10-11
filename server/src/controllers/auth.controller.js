@@ -6,19 +6,32 @@ export const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: "All fields required" });
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
   }
 
+  let conn;
+
   try {
-    const conn = await getConnection();
+    conn = await getConnection();
+
     const result = await conn.execute(
-      `SELECT U.USER_ID, U.USERNAME, U.PASSWORD_HASH, U.IS_ACTIVE, 
-              E.EMP_ID, E.EMP_NAME, E.DESIGNATION,
-              R.ROLE_ID, R.ROLE_NAME
-         FROM USERS U
-         JOIN EMPLOYEES E ON U.EMP_ID = E.EMP_ID
-         JOIN USER_ROLES R ON U.ROLE_ID = R.ROLE_ID
-         WHERE U.USERNAME = :username`,
+      `SELECT 
+          U.USER_ID, 
+          U.USERNAME, 
+          U.PASSWORD_HASH, 
+          U.IS_ACTIVE, 
+          E.EMP_ID, 
+          E.EMP_NAME, 
+          E.DESIGNATION, 
+          R.ROLE_ID, 
+          R.ROLE_NAME
+       FROM USERS U
+       JOIN EMPLOYEES E ON U.EMP_ID = E.EMP_ID
+       JOIN USER_ROLES R ON U.ROLE_ID = R.ROLE_ID
+       WHERE U.USERNAME = :username`,
       { username }
     );
 
@@ -26,62 +39,62 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
+    // Oracle default array-based fetch
     const user = result.rows[0];
-    const passwordMatch = await bcrypt.compare(password, user[2]);
 
-    if (!passwordMatch) {
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user[2]);
+    if (!isMatch) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
+    // Check if user is active
     if (user[3] !== "Y") {
       return res.status(403).json({ success: false, message: "User is inactive" });
     }
 
-    const token = jwt.sign(
-      { userId: user[0], username: user[1], role: user[8] },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
-    );
+    // ✅ Create JWT token with full user payload
+    const tokenPayload = {
+      userId: user[0],
+      username: user[1],
+      empId: user[4],
+      empName: user[5],
+      designation: user[6],
+      roleId: user[7],
+      roleName: user[8],
+    };
 
-    await conn.close();
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || "1d",
+    });
 
     return res.json({
       success: true,
       message: "Login successful",
       data: {
         token,
-        user: {
-          userId: user[0],
-          username: user[1],
-          empId: user[4],
-          empName: user[5],
-          designation: user[6],
-          roleId: user[7],
-          roleName: user[8],
-        },
+        user: tokenPayload, // easy to access on frontend
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Login error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
+  } finally {
+    if (conn) await conn.close();
   }
 };
 
-// controllers/authController.js
-
 export const logout = async (req, res) => {
   try {
-    // For JWT, logout is client-side (delete token). But we can also blacklist it if needed.
     return res.json({
       success: true,
-      message: "Logout successful"
+      message: "Logout successful",
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error",
     });
   }
 };
-

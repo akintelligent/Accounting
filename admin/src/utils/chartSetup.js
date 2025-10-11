@@ -1,21 +1,24 @@
 import {
   Chart as ChartJS,
-  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement, // ✅ Add this
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement, // ✅ For Pie Chart
 } from "chart.js";
 
+// ✅ Register all chart elements globally
 ChartJS.register(
-  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement, // ✅ Register bar
+  ArcElement, // ✅ Register pie
   Title,
   Tooltip,
   Legend

@@ -1,35 +1,37 @@
 import apiClient from "../api/apiClient";
 
-// Balance Sheet Data (Pagination, Sorting, Date Filter)
-export const getBalanceSheet = async (fromDate, toDate, page, pageSize, sortField, sortOrder) => {
+// Get Balance Sheet (with pagination, sorting, date filter)
+export const getBalanceSheet = async (fromDate, toDate, page = 1, pageSize = 10, sortField = "ACCOUNT_NAME", sortOrder = "ASC") => {
   const response = await apiClient.get("/balance-sheet", {
-    params: {
-      fromDate: fromDate || null,
-      toDate: toDate || null,
-      page: page || 1,
-      pageSize: pageSize || 10,
-      sortField: sortField || "ACCOUNT_NAME",
-      sortOrder: sortOrder || "ASC"
-    }
+    params: { fromDate, toDate, page, pageSize, sortField, sortOrder }
   });
   return response.data;
 };
 
 // PDF Export
 export const exportBalanceSheetPDF = async (fromDate, toDate) => {
-  const response = await apiClient.get("/balance-sheet/report/pdf", {
-    params: { fromDate, toDate },
-    responseType: "blob"
-  });
-  return response.data;
+  try {
+    const response = await apiClient.get("/balance-sheet/report/pdf", {
+      params: { fromDate, toDate },
+      responseType: "blob"
+    });
+    return response.data;
+  } catch (error) {
+    console.error("PDF Export failed:", error);
+    throw error;
+  }
 };
-
 
 // Excel Export
 export const exportBalanceSheetExcel = async (fromDate, toDate) => {
-  const response = await apiClient.get("/balance-sheet/report/excel", {
-    params: { fromDate, toDate },
-    responseType: "arraybuffer"
-  });
-  return response.data;
+  try {
+    const response = await apiClient.get("/balance-sheet/report/excel", {
+      params: { fromDate, toDate },
+      responseType: "arraybuffer"
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Excel Export failed:", error);
+    throw error;
+  }
 };
